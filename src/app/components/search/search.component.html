@@ -1,0 +1,30 @@
+
+<div class="row animated fadeIn fast">
+    <div class="col-lg-12">
+        <div class="input-group">
+          <input type="text" class="form-control" #termino placeholder="Search Terms..." (keydown.enter)="search(termino.value)">
+          <span class="input-group-btn">
+            <button class="btn btn-primary" type="button" (click)="search(termino.value)">Search</button>
+          </span>
+        </div>
+      </div>
+</div>
+
+<div class="alert alert-primary mt-5" role="alert" *ngIf="searchEmpty">
+    There are no results for the search terms: {{ termino.value }} !
+</div>
+
+<div class="row">
+    <div class="card-columns m-5">
+        <div class="card" *ngFor="let item of works">        
+        <img [src]="item | noimage" class="card-img-top" [alt]="item.title">
+        <div class="card-body">
+            <h5 class="card-title">{{ item.title }}</h5>
+            <p class="card-text">{{ item.longTitle }}.</p>
+            <span class="badge badge-pill badge-primary">
+                {{ item.principalOrFirstMaker }}
+            </span>
+        </div>
+        </div>
+    </div>
+</div>

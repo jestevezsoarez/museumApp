@@ -1,0 +1,23 @@
+
+<div class="jumbotron bg-dark animated fadeIn fast">
+  <h1 class="display-4 text-center">Museum Application</h1>
+  <img src="assets/img/transparent-museum-icon.png" class="img-fluid logo mx-auto d-block" alt="Museum picture">   
+  <p class="lead">This is an application made in angular to enjoy seeing the most prestigious Artworks in the world  
+     and the artists who built them.</p>    
+ <hr class="my-4">
+</div>
+
+
+<div class="card-columns">
+    <div class="card" *ngFor="let item of collections">
+      <img [src]="item | noimage" class="card-img-top" [alt]="item.title">
+      <div class="card-body">
+        <h5 class="card-title">{{ item.title }}</h5>
+        <p class="card-text">{{ item.longTitle }}.</p>
+        <span class="badge badge-pill badge-primary">
+            {{ item.principalOrFirstMaker }}
+        </span>
+      </div>
+    </div>
+</div>
+

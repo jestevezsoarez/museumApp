@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MuseumService } from '../../services/museum.service';
 
@@ -15,7 +14,7 @@ export class HomeComponent implements OnInit {
     
       this.servicio.getCollectionData()
         .subscribe( (data: any ) => {
-            console.log(data.artObjects);
+            //console.log(data.artObjects);
             this.collections = data.artObjects;
         })
 

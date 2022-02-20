@@ -19,7 +19,7 @@ export class SearchComponent implements OnInit {
     this.service.getSearchTerm( termino )
         .subscribe( (data: any) => {            
             this.works = data.artObjects;
-            console.log(this.works);
+            //console.log(this.works);
             if (this.works.length == 0) {
                 this.searchEmpty = true;
             } else {

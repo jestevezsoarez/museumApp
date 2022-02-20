@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { SearchComponent } from './components/search/search.component';
-import { PieceComponent } from './components/piece/piece.component';
+// import { PieceComponent } from './components/piece/piece.component';
 import { NavbarComponent } from './components/shared/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { AboutComponent } from './components/about/about.component';
@@ -27,7 +27,6 @@ import { NoimagePipe } from './pipes/noimage.pipe';
     AppComponent,
     HomeComponent,
     SearchComponent,
-    PieceComponent,
     NavbarComponent,
     NoimagePipe,
     FooterComponent,

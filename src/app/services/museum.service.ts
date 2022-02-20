@@ -17,13 +17,13 @@ export class MuseumService {
 
 
   constructor( private http: HttpClient ) {
-    console.log('Museo Service running');    
+    // console.log('Museo Service running');    
    }
 
 
    getCollectionData() {     
      return this.http.get(`https://www.rijksmuseum.nl/api/${ this.culture }/collection?key=${ this.apiKey }&ps=${ this.artWorks }`);
-   }
+   }   
 
 
    // Returns artworks fetched from api based on the search term

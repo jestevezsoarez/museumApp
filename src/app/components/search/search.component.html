@@ -14,17 +14,21 @@
     There are no results for the search terms: {{ termino.value }} !
 </div>
 
-<div class="row">
-    <div class="card-columns m-5">
+<!-- Corregimos la grilla envolviendo las columnas en un contenedor adecuado -->
+<div class="container-fluid mt-4">
+    <div class="card-columns">
         <div class="card" *ngFor="let item of works">        
-        <img [src]="item | noimage" class="card-img-top" [alt]="item.title">
-        <div class="card-body">
-            <h5 class="card-title">{{ item.title }}</h5>
-            <p class="card-text">{{ item.longTitle }}.</p>
-            <span class="badge badge-pill badge-primary">
-                {{ item.principalOrFirstMaker }}
-            </span>
-        </div>
+          
+          <!-- Eliminamos el pipe viejo y apuntamos directo al nodo limpio.webImage.url -->
+          <img *ngIf="item.webImage" [src]="item.webImage.url" class="card-img-top" [alt]="item.title">
+          
+          <div class="card-body">
+              <h5 class="card-title">{{ item.title }}</h5>
+              <p class="card-text">{{ item.longTitle }}.</p>
+              <span class="badge badge-pill badge-primary">
+                  {{ item.principalOrFirstMaker }}
+              </span>
+          </div>
         </div>
     </div>
 </div>

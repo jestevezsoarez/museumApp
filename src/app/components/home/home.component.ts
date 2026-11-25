@@ -27,7 +27,6 @@ export class HomeComponent implements OnInit {
         }),
         map((artObjectsDetailed: any[]) => {
           return artObjectsDetailed.map(obra => {
-            
             // 1. Extraer el Título
             const todosLosNombres = obra.identified_by?.filter((id: any) => id.type === 'Name' || id.type === 'Identifier') || [];
             const nombreIngles = todosLosNombres.find((n: any) => n.language?.some((l: any) => l.id?.includes('300388277')));

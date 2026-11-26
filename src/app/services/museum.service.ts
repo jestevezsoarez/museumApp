@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams  } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -6,37 +6,22 @@ import { Injectable } from '@angular/core';
 })
 export class MuseumService {
 
-  // The language to search in (and of the results).
-  culture  : string         = 'en';
+  // The language to search
+  culture: string = 'en';
 
-  // Your API-key, mandatory for every request.
-  apiKey   : string         = 'Vk0rV5g6';
+  constructor(private http: HttpClient) {    
+  }  
 
-  // The number of results per page
-  artWorks : number         = 20;
+  getCollectionData() {
+    const baseUrl = 'https://data.rijksmuseum.nl/search/collection?type=painting';
+    
+    return this.http.get(baseUrl);
+  }
 
-
-  constructor( private http: HttpClient ) {
-    // console.log('Museo Service running');    
-   }
-
-
-   getCollectionData() {     
-     return this.http.get(`https://www.rijksmuseum.nl/api/${ this.culture }/collection?key=${ this.apiKey }&ps=${ this.artWorks }`);
-   }   
-
-
-   // Returns artworks fetched from api based on the search term
-   // GET /api/[culture]/collection
-   getSearchTerm( termino: string ) {
-    return this.http.get(`https://www.rijksmuseum.nl/api/${ this.culture }/collection?key=${ this.apiKey }&q=${ termino }&ps=${ this.artWorks }`);
-   }
-
-
-   // Detailed information about the selected piece
-   // GET /api/[culture]/collection/[object-number]
-   getPiece( piece: string ) {
-    return this.http.get(`https://www.rijksmuseum.nl/api/${ this.culture }/collection/${ piece }?key=${ this.apiKey }`);
-   }
+getSearchTerm(term: string) {
+  const params = new HttpParams().set('creator', term.trim());
+  
+  return this.http.get('https://data.rijksmuseum.nl/search/collection', { params });
+}
 
 }

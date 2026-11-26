@@ -7,15 +7,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { SearchComponent } from './components/search/search.component';
-// import { PieceComponent } from './components/piece/piece.component';
 import { NavbarComponent } from './components/shared/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { AboutComponent } from './components/about/about.component';
 
-// Importar rutas
+// Routes
 import { ROUTES } from './app.routes';
 
-// Importar servicios
+// Services
 import { MuseumService } from './services/museum.service';
 
 // Pipes

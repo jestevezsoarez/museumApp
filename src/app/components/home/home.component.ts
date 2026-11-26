@@ -20,48 +20,48 @@ export class HomeComponent implements OnInit {
       .pipe(
         switchMap((data: any) => {
           const items = data.orderedItems || [];
-          // Tomamos un margen amplio de elementos (ej. 24) ya que algunos se descartarán por no tener foto
+          // I took a wide range of items (e.g., 24) since some will be discarded for not having a photo
           const limitedItems = items.slice(0, 24);
           const detailRequests = limitedItems.map((item: any) => this.http.get(item.id));
           return forkJoin(detailRequests);
         }),
         map((artObjectsDetailed: any[]) => {
-          return artObjectsDetailed.map(obra => {
-            // 1. Extraer el Título
-            const todosLosNombres = obra.identified_by?.filter((id: any) => id.type === 'Name' || id.type === 'Identifier') || [];
-            const nombreIngles = todosLosNombres.find((n: any) => n.language?.some((l: any) => l.id?.includes('300388277')));
-            let title = nombreIngles ? nombreIngles.content : (todosLosNombres[0] ? todosLosNombres[0].content : 'Untitled Artpiece');
+          return artObjectsDetailed.map(work => {
+            // Title
+            const allNames = work.identified_by?.filter((id: any) => id.type === 'Name' || id.type === 'Identifier') || [];
+            const englishName = allNames.find((n: any) => n.language?.some((l: any) => l.id?.includes('300388277')));
+            let title = englishName ? englishName.content : (allNames[0] ? allNames[0].content : 'Untitled Artpiece');
             
             if (title.includes('Portret van')) {
               title = title.replace('Portret van', 'Portrait of').replace('Koningin der Nederlanden', 'Queen of the Netherlands');
             }
 
-            // 2. Extraer la Descripción Larga
-            const descripciones = obra.referred_to_by?.filter((ref: any) => ref.content) || [];
-            const descIngles = descripciones.find((d: any) => d.language?.some((l: any) => l.id?.includes('300388277')));
-            const longTitle = descIngles ? descIngles.content : `${title}. Official exhibition item from the Rijksmuseum repository`;
+            // Long description
+            const descriptions = work.referred_to_by?.filter((ref: any) => ref.content) || [];
+            const descEnglish = descriptions.find((d: any) => d.language?.some((l: any) => l.id?.includes('300388277')));
+            const longTitle = descEnglish ? descEnglish.content : `${title}. Official exhibition item from the Rijksmuseum repository`;
 
-            // 3. Extraer el Autor
+            // Author
             let author = 'Unknown Artist';
-            const production = obra.produced_by;
+            const production = work.produced_by;
             if (production) {
-              const anotacionesAutor = production.referred_to_by || (production.part?.flatMap((p: any) => p.referred_to_by || [])) || [];
-              const autorIngles = anotacionesAutor.find((ref: any) => ref.language?.some((l: any) => l.id?.includes('300388277')));
-              if (autorIngles) {
-                author = autorIngles.content;
-              } else if (anotacionesAutor[0]) {
-                author = anotacionesAutor[0].content.replace('vermeld op object', 'mentioned on object').replace('prentmaker:', 'Printmaker:');
+              const authorNotes = production.referred_to_by || (production.part?.flatMap((p: any) => p.referred_to_by || [])) || [];
+              const englishAuthor = authorNotes.find((ref: any) => ref.language?.some((l: any) => l.id?.includes('300388277')));
+              if (englishAuthor) {
+                author = englishAuthor.content;
+              } else if (authorNotes[0]) {
+                author = authorNotes[0].content.replace('vermeld op object', 'mentioned on object').replace('prentmaker:', 'Printmaker:');
               }
             }
 
             // 4. Extraer la Imagen Digital Real
-            const puntosAcceso = obra.subject_of?.flatMap((s: any) => s.digitally_carried_by || [])
+            const accessPoint = work.subject_of?.flatMap((s: any) => s.digitally_carried_by || [])
                                                  ?.flatMap((d: any) => d.access_point || []) || [];
             
-            const imagenValida = puntosAcceso.find((a: any) => a.id && a.id.includes('iiif'));
+            const validImage = accessPoint.find((a: any) => a.id && a.id.includes('iiif'));
             let imageUrl = null;
-            if (imagenValida) {
-              imageUrl = imagenValida.id.replace('/manifest', '/full/max/0/default.jpg');
+            if (validImage) {
+              imageUrl = validImage.id.replace('/manifest', '/full/max/0/default.jpg');
             }
 
             return {
@@ -76,10 +76,10 @@ export class HomeComponent implements OnInit {
       )
       .subscribe({
         next: (processedCollection: any[]) => {
-          // Filtramos de forma estricta para quedarnos únicamente con lo que SÍ tiene imagen
+          // Keep items only if they have an image
           this.collections = processedCollection.filter(item => item.headerImage !== null && item.headerImage.url !== null);
         },
-        error: (err) => console.error('Error cargando datos:', err)
+        error: (err) => console.error('Error loading data:', err)
       });
   }
 }

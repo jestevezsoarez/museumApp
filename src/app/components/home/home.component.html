@@ -9,7 +9,6 @@
 
 <div class="card-columns">
   <div class="card" *ngFor="let item of collections">
-    <!-- <img [src]="item | noimage" class="card-img-top" [alt]="item.title"> -->
     <img *ngIf="item.webImage" [src]="item.webImage.url" class="card-img-top" [alt]="item.title">
     <img *ngIf="!item.webImage" src="assets/img/transparent-museum-icon.png" class="card-img-top" [alt]="item.title">
     <div class="card-body">

@@ -14,14 +14,11 @@
     There are no results for the search terms: {{ termino.value }} !
 </div>
 
-<!-- Corregimos la grilla envolviendo las columnas en un contenedor adecuado -->
 <div class="container-fluid mt-4">
     <div class="card-columns">
         <div class="card" *ngFor="let item of works">        
-          
-          <!-- Eliminamos el pipe viejo y apuntamos directo al nodo limpio.webImage.url -->
           <img *ngIf="item.webImage" [src]="item.webImage.url" class="card-img-top" [alt]="item.title">
-          
+                    
           <div class="card-body">
               <h5 class="card-title">{{ item.title }}</h5>
               <p class="card-text">{{ item.longTitle }}.</p>

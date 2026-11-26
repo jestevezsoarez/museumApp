@@ -16,18 +16,18 @@ export class SearchComponent implements OnInit {
 
   constructor( private service: MuseumService, private http: HttpClient ) { }
 
-  search( termino: string ) {
+  search( term: string ) {
     this.searchEmpty = false;
     this.works = [];
     
     // If the user deletes the text entirely, then clear the previous results.
-    if (termino.trim().length === 0) {
+    if (term.trim().length === 0) {
       this.works = [];
       this.searchEmpty = false;
       return;
     }
 
-    this.service.getSearchTerm( termino )
+    this.service.getSearchTerm( term )
       .pipe(
         switchMap((data: any) => {
           
@@ -48,43 +48,43 @@ export class SearchComponent implements OnInit {
           return forkJoin(detailRequests);
         }),
         map((artObjectsDetailed: any[]) => {
-          return artObjectsDetailed.map(obra => {
+          return artObjectsDetailed.map(work => {
             
             // Extract Title using international language
-            const todosLosNombres = obra.identified_by?.filter((id: any) => id.type === 'Name' || id.type === 'Identifier') || [];
-            const nombreIngles = todosLosNombres.find((n: any) => n.language?.some((l: any) => l.id?.includes('300388277')));
-            let title = nombreIngles ? nombreIngles.content : (todosLosNombres.length > 0 ? todosLosNombres[0].content : 'Untitled Artpiece');
+            const allNames = work.identified_by?.filter((id: any) => id.type === 'Name' || id.type === 'Identifier') || [];
+            const englishName = allNames.find((n: any) => n.language?.some((l: any) => l.id?.includes('300388277')));
+            let title = englishName ? englishName.content : (allNames.length > 0 ? allNames[0].content : 'Untitled Artpiece');
             
             if (title.includes('Portret van')) {
               title = title.replace('Portret van', 'Portrait of').replace('Koningin der Nederlanden', 'Queen of the Netherlands');
             }
 
             // Extract long description
-            const descripciones = obra.referred_to_by?.filter((ref: any) => ref.content) || [];
-            const descIngles = descripciones.find((d: any) => d.language?.some((l: any) => l.id?.includes('300388277')));
-            const longTitle = descIngles ? descIngles.content : `${title}. Official exhibition item from the Rijksmuseum repository`;
+            const descriptions = work.referred_to_by?.filter((ref: any) => ref.content) || [];
+            const descEnglish = descriptions.find((d: any) => d.language?.some((l: any) => l.id?.includes('300388277')));
+            const longTitle = descEnglish ? descEnglish.content : `${title}. Official exhibition item from the Rijksmuseum repository`;
 
             // Extract author
             let author = 'Unknown Artist';
-            const production = obra.produced_by;
+            const production = work.produced_by;
             if (production) {
-              const anotacionesAutor = production.referred_to_by || (production.part?.flatMap((p: any) => p.referred_to_by || [])) || [];
-              const autorIngles = anotacionesAutor.find((ref: any) => ref.language?.some((l: any) => l.id?.includes('300388277')));
-              if (autorIngles) {
-                author = autorIngles.content;
-              } else if (anotacionesAutor.length > 0) {
-                author = anotacionesAutor[0].content.replace('vermeld op object', 'mentioned on object').replace('prentmaker:', 'Printmaker:');
+              const authorNotes = production.referred_to_by || (production.part?.flatMap((p: any) => p.referred_to_by || [])) || [];
+              const englishAuthor = authorNotes.find((ref: any) => ref.language?.some((l: any) => l.id?.includes('300388277')));
+              if (englishAuthor) {
+                author = englishAuthor.content;
+              } else if (authorNotes.length > 0) {
+                author = authorNotes[0].content.replace('vermeld op object', 'mentioned on object').replace('prentmaker:', 'Printmaker:');
               }
             }
 
             // Extract image IIIF
-            const puntosAcceso = obra.subject_of?.flatMap((s: any) => s.digitally_carried_by || [])
+            const accessPoint = work.subject_of?.flatMap((s: any) => s.digitally_carried_by || [])
                                                  ?.flatMap((d: any) => d.access_point || []) || [];
             
-            const imagenValida = puntosAcceso.find((a: any) => a.id && a.id.includes('iiif'));
+            const validImage = accessPoint.find((a: any) => a.id && a.id.includes('iiif'));
             let imageUrl = null;
-            if (imagenValida) {
-              imageUrl = imagenValida.id.replace('/manifest', '/full/max/0/default.jpg');
+            if (validImage) {
+              imageUrl = validImage.id.replace('/manifest', '/full/max/0/default.jpg');
             }
 
             // Create object simulating the old structure

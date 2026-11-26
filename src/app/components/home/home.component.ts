@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit {
               }
             }
 
-            // 4. Extraer la Imagen Digital Real
+            // Image
             const accessPoint = work.subject_of?.flatMap((s: any) => s.digitally_carried_by || [])
                                                  ?.flatMap((d: any) => d.access_point || []) || [];
             
